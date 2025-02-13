@@ -20,18 +20,24 @@ source activate py312
 
 # Run the main.py script
 python main.py \
-    --exp_name dice \
+    --exp_name test \
     --log_dir logs \
-    --img_dir /vol/miltank/projects/practical_WS2425/diffusion/data/amos_robert_slices/images \
-    --seg_dir /vol/miltank/projects/practical_WS2425/diffusion/data/amos_robert_slices/labels \
-    --batch_size 64 \
+    --batch_size 32 \
     --img_size 256 \
-    --model_type unet \
     --transforms "['ToTensor', 'RandomRotation', 'RandomResizedCrop', 'Normalize']" \
+    --img_dir /vol/miltank/projects/practical_WS2425/diffusion/data/amos_robert_slices/images_all_axis \
+    --seg_dir /vol/miltank/projects/practical_WS2425/diffusion/data/amos_robert_slices/labels_all_axis \
+    --include_bg True \
+    --model_type unet \
     --lr 0.01 \
-    --num_workers 16 \
+    --weight_decay 0.001 \
+    --tv_weight 0.01 \
+    --focal_weight 10 \
+    --num_workers 32 \
+    --max_epochs 100 \
     --resume \
-    # --ce_weight "/vol/miltank/projects/practical_WS2425/diffusion/code/evaluation/amos_segmentator/utils/label_weights.npy" \
+
     # --transforms "['ToTensor', 'Resize', 'CenterCrop', 'Normalize']" \
     # --img_dir /vol/miltank/projects/practical_WS2425/diffusion/data/test_data/images \
     # --seg_dir /vol/miltank/projects/practical_WS2425/diffusion/data/test_data/labels \
+    # --ce_weight "/vol/miltank/projects/practical_WS2425/diffusion/code/evaluation/amos_segmentator/utils/label_weights.npy" \
