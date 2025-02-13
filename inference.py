@@ -2,6 +2,7 @@
 import argparse
 import os
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pytorch_lightning as pl
 import torch
@@ -27,8 +28,8 @@ parser.add_argument(
 )
 args = parser.parse_args()
 # args = argparse.Namespace(
-#     input_dir="/vol/miltank/projects/practical_WS2425/diffusion/code/evaluation/input/ddim_amos_ct_allseg/256_40/img",
-#     output_dir="/vol/miltank/projects/practical_WS2425/diffusion/code/evaluation/input/ddim_amos_ct_allseg/256_40/seg_pred",
+#     input_dir="/vol/miltank/projects/practical_WS2425/diffusion/code/evaluation/input/amos_ct_all_axis/256_40/img",
+#     output_dir="/vol/miltank/projects/practical_WS2425/diffusion/code/evaluation/input/amos_ct_all_axis/256_40/seg_pred",
 #     ckpt_path="/vol/miltank/projects/practical_WS2425/diffusion/code/amos_segmentator/logs/final/version_6/checkpoints/amos_segmentator_checkpoint-epoch=04-val_loss=0.17.ckpt",
 #     img_size=256,
 # )
@@ -65,6 +66,9 @@ print(f"Loaded {len(images)} images")
 print(f"shape: {images[0].size}")
 
 # %%
+images[0]
+
+# %%
 
 preds = []
 # Perform inference
@@ -74,23 +78,18 @@ for img in images:
     pred = model(img)
     pred = pred.squeeze(0)
     pred = pred.detach().cpu().numpy()
-    pred = np.argmax(pred, axis=0, keepdims=True)
-    pred = (pred * 255).astype("uint8")
+    pred = np.argmax(pred, axis=0, keepdims=False)
     preds.append(pred)
 
-preds[0]
 
 # %%
 # Save the predictions
 print(f"Saving predictions to {args.output_dir}")
 os.makedirs(args.output_dir, exist_ok=True)
 for pred, image_file in zip(preds, image_files):
-    io.imsave(
-        os.path.join(args.output_dir, f"{image_file}"), pred, check_contrast=False
+    Image.fromarray(pred.astype(np.uint8)).save(
+        os.path.join(args.output_dir, f"{image_file}"),
     )
 
 
-# if __name__ == "__main__":
-#     main()
 # %%
-image_files
